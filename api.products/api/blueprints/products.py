@@ -4,7 +4,7 @@ from api.schemas import ProductSchema
 
 products_blueprint = Blueprint('products_blueprint', __name__)
 
-@products_blueprint.route('/', methods=['GET'])
+@products_blueprint.route('/all', methods=['GET'])
 def get_all_products():
     product_schema = ProductSchema(many=True)
     try:

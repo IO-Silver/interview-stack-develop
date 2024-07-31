@@ -1,5 +1,32 @@
 import axios from "axios";
-import { Order, OrderData } from "../components/interfaces";
+import { Order, OrderData, Product, ProductData } from "../components/interfaces";
+
+
+const PRODUCTS_URL = '/api/products/all';
+
+const getProductData = async () => {
+    const productData: ProductData = {
+      Active: [],
+      InActive: [],
+    };
+    let errorOccured = false;
+    try {
+      const response = await axios.get(PRODUCTS_URL);
+      if (response?.status === 200) {
+        const { data } = response.data;
+        data.forEach((product: Product) => {
+          productData[product.ProductStatus as keyof ProductData].push(product);
+        });
+      } else {
+        const { message } = response.data;
+        throw message;
+      }
+    } catch(err) {
+      console.error(err);
+      errorOccured = true;
+    }
+    return { productData, errorOccured };
+};
 
 const INPIPELINE_URL = '/api/orders/inpipeline';
 
@@ -46,4 +73,4 @@ const updateOrderStatus = async (order: Order, newOrderStatus: string) => {
     return orderStatusUpdated;
 };
 
-export { getInPipelineData, INPIPELINE_URL, updateOrderStatus, UPDATE_STATUS_URL };
+export { getInPipelineData, INPIPELINE_URL, updateOrderStatus, UPDATE_STATUS_URL, getProductData, PRODUCTS_URL };
